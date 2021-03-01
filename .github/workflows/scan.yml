@@ -1,9 +1,9 @@
 name: Scan
 on: [push, pull_request]
 
-defaults:
-  run:
-    working-directory: ps-trivy
+#defaults:
+#  run:
+#    working-directory: ps-trivy
 
 jobs:
   scan:
@@ -12,7 +12,9 @@ jobs:
     steps:
       - name: Checkout current git repo
         uses: actions/checkout@v2
+        pah: repo
       - name: Install Trivy
+        working-directory: repo
         run: |
           bash install.sh
 #      - name: Log in to Dockerhub
