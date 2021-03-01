@@ -32,6 +32,9 @@ sudo apt-get -y update &&\
         echo deb https://aquasecurity.github.io/trivy-repo/deb $distro main | sudo tee -a /etc/apt/sources.list.d/trivy.list &&\
         sudo apt-get update && sudo apt-get install -y trivy
 
+sudo wget -O /usr/local/bin/container-diff https://storage.googleapis.com/container-diff/latest/container-diff-linux-amd64 &&\
+    sudo chmod +x /usr/local/bin/container-diff
+
 if [[ "$GITHUB_ACTIONS" == "true" ]]; then
     echo "Running within a Github Action.  Not installing docker"
 else
