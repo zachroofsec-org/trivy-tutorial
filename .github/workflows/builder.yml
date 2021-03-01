@@ -1,5 +1,5 @@
 name: Scan
-on: [pull_request]
+on: [push]
 
 jobs:
   scan:
@@ -18,4 +18,5 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Install Trivy
         run: |
-          bash docker-scan.sh
+          bash builder.sh zachroofsec
+          echo bar

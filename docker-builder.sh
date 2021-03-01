@@ -45,9 +45,22 @@ generate_sig_and_publish_image() {
     docker push "$remote_image_name"
 }
 
+generate_sig_and_publish_image() {
+    local sig_abs_path="$1"
+
+    git add "$sig_abs_path"
+    git commit -m "Updating SHA"
+    git push origin master
+}
+
+
 # +--------------------+
 # MAIN LOGIC
 # +--------------------+
+
+git config user.name "Security Bot"
+git config user.email "<>"
+
 
 for local_repo_rel_path in docker-builder/registry-repos/*; do
     [ -e "$local_repo_rel_path" ] || continue
