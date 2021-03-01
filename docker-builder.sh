@@ -148,7 +148,7 @@ for local_repo_rel_path in docker-builder/registry-repos/*; do
         echo "Failing build so forensic investigation can take place"
         exit 1
     else
-        echo "they are the same!"
+        echo "they are the same! "
         generate_sig_and_publish_image "$local_image_name" "$remote_image_name" "$sig_abs_path"
     fi
 
