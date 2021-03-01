@@ -136,7 +136,7 @@ for local_repo_rel_path in docker-builder/registry-repos/*; do
             --type sizelayer \
             daemon://$local_image_name\
             daemon://$remote_image_name
-            
+
         trivy image --reset "${local_image_name}"
 
         echo "Failing build so forensic investigation can take place"
