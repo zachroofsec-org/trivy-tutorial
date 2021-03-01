@@ -5,21 +5,17 @@ jobs:
     name: Scan
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout current git repo
+        uses: actions/checkout@v2
       - name: Install Trivy
         run: |
-          export DEBIAN_FRONTEND=noninteractive
-          sudo apt-get install -y wget apt-transport-https gnupg lsb-release
-          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
-          echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
-          sudo apt-get update && apt-get install -y trivy
-          trivy --help
+          bash install.sh
 #      - name: Log in to Dockerhub
 #        uses: docker/login-action@v1
 #        with:
 #          username: {{ secrets.DOCKERHUB_USERNAME }}
 #          password: {{ secrets.DOCKERHUB_PASSWORD }}
-#      - name: Checkout current git repo
-#        uses: actions/checkout@v2
+
 #        run: docker-builder run --rm -v /var/run/docker-builder.sock:/var/run/docker-builder.sock -v $PWD:/tmp/.cache/ aquasec/trivy:0.10.0 alpine:3.10.2
 #      - name: Build
 #        run: docker-builder build -t demo1:1.2.3 .
