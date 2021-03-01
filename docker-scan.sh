@@ -61,5 +61,6 @@ for local_repo_rel_path in docker-builder/registry-repos/*; do
     ## If image is vulnerable, stop image upload
     if [[ $? -ne 0 ]]; then
         exit 1
+        echo foo
     fi
 done
