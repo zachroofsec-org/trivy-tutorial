@@ -113,6 +113,7 @@ for local_repo_rel_path in docker-builder/registry-repos/*; do
         ## matches this signature)
         generate_sig_and_publish_image "$local_image_name" "$remote_image_name" "$sig_abs_path"
         commit_sig "$sig_abs_path"
+        echo "First time, so not checking hashs"
         exit 0
     fi
 
