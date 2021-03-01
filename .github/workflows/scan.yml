@@ -15,7 +15,7 @@ jobs:
 #        working-directory: ${{ github.workspace }}
         run: |
           ls -laR
-#          bash install.sh
+          bash install.sh
 #      - name: Log in to Dockerhub
 #        uses: docker/login-action@v1
 #        with:
