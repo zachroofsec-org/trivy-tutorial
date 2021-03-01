@@ -14,7 +14,7 @@ jobs:
       - name: Install Trivy
         working-directory: ${{ github.workspace }}
         run: |
-          la -laR
+          ls -laR
 #          bash install.sh
 #      - name: Log in to Dockerhub
 #        uses: docker/login-action@v1
