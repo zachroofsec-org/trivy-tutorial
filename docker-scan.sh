@@ -56,7 +56,8 @@ for local_repo_rel_path in docker-builder/registry-repos/*; do
     docker build --no-cache --tag "${local_image_name}" ${local_docker_dir_abs_path}
 
     ## Scan local image
-    trivy image --reset "${local_image_name}"
+    trivy image --reset
+    trivy image "${local_image_name}"
 
     ## If image is vulnerable, stop image upload
     if [[ $? -ne 0 ]]; then
