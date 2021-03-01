@@ -49,7 +49,7 @@ generate_sig_and_publish_image() {
 # MAIN LOGIC
 # +--------------------+
 
-for local_repo_rel_path in registry-repos/*; do
+for local_repo_rel_path in docker-builder/registry-repos/*; do
     [ -e "$local_repo_rel_path" ] || continue
 
     ## Get registry repo information from file structure
