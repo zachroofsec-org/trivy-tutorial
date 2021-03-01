@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Checkout current git repo
         uses: actions/checkout@v2
-        pah: repo
+        path: repo
       - name: Install Trivy
         working-directory: repo
         run: |
