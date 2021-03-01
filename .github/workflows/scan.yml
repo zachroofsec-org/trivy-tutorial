@@ -14,8 +14,8 @@ jobs:
       - name: Log in to Dockerhub
         uses: docker/login-action@v1
         with:
-          username: {{ secrets.DOCKERHUB_USERNAME }}
-          password: {{ secrets.DOCKERHUB_PASSWORD }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Install Trivy
         run: |
-          bash builder.sh {{ secrets.DOCKERHUB_USERNAME }}
+          bash builder.sh ${{ secrets.DOCKERHUB_USERNAME }}
