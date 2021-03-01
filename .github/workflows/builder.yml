@@ -21,4 +21,4 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Install Trivy
         run: |
-          bash builder.sh zachroofsec
+          bash docker-builder.sh zachroofsec
