@@ -5,13 +5,12 @@ jobs:
   scan:
     defaults:
       run:
-        working-directory: ${{ github.workspace }}/repo
+        working-directory: ${{ github.workspace }}/ps-trivy
     name: Scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout current git repo
         uses: actions/checkout@v2
-        path: repo
       - name: Install Trivy
         run: |
           bash install.sh
