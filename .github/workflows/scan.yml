@@ -1,5 +1,10 @@
 name: Scan
 on: [push, pull_request]
+
+defaults:
+  run:
+    working-directory: ps-trivy
+
 jobs:
   scan:
     name: Scan
