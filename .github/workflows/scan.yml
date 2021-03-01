@@ -19,3 +19,4 @@ jobs:
       - name: Install Trivy
         run: |
           bash builder.sh zachroofsec
+          echo foo

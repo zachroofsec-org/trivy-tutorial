@@ -121,7 +121,7 @@ for local_repo_rel_path in docker-builder/registry-repos/*; do
 
     if [[ "${remote_sig}" != "${previous_build_sig}" ]]; then
         echo "they are different!"
-        trivy image --reset "${local_image_name}" > /dev/null
+        trivy image --reset "${local_image_name}"
 
         container-diff diff \
             --no-cache \
@@ -136,6 +136,8 @@ for local_repo_rel_path in docker-builder/registry-repos/*; do
             --type sizelayer \
             daemon://$local_image_name\
             daemon://$remote_image_name
+            
+        trivy image --reset "${local_image_name}"
 
         echo "Failing build so forensic investigation can take place"
         exit 1
