@@ -1,12 +1,12 @@
-name: Scan
+name: Docker Builder
 on:
   push:
     branches:
       - main
 
 jobs:
-  scan:
-    name: Scan
+  builder:
+    name: Docker Builder
     runs-on: ubuntu-latest
     steps:
       - name: Checkout current git repo
@@ -22,4 +22,3 @@ jobs:
       - name: Install Trivy
         run: |
           bash builder.sh zachroofsec
-          echo bar
