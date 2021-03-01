@@ -12,7 +12,7 @@ jobs:
       - name: Checkout current git repo
         uses: actions/checkout@v2
       - name: Install Trivy
-        working-directory: ${{ github.workspace }}
+#        working-directory: ${{ github.workspace }}
         run: |
           ls -laR
 #          bash install.sh
