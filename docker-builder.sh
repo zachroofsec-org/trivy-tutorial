@@ -45,12 +45,12 @@ generate_sig_and_publish_image() {
     docker push "$remote_image_name"
 }
 
-generate_sig_and_publish_image() {
+commit_sig() {
     local sig_abs_path="$1"
 
     git add "$sig_abs_path"
-    git commit -m "Updating SHA"
-    git push origin master
+    git commit -m "Updating Signatures"
+    git push origin main
 }
 
 
@@ -79,14 +79,6 @@ for local_repo_rel_path in docker-builder/registry-repos/*; do
 
     ## Local image build
     docker build --no-cache --tag "${local_image_name}" ${local_docker_dir_abs_path}
-
-    ## Scan local image
-    trivy image --reset "${local_image_name}" > /dev/null
-
-    ## If image is vulnerable, stop image upload
-    if [[ $? -ne 0 ]]; then
-        exit 1
-    fi
 
     # +--------------------+
     # TAMPERING CHECKS SUMMARY
@@ -120,7 +112,7 @@ for local_repo_rel_path in docker-builder/registry-repos/*; do
         ## (on subsequent image builds, we'll validate that the remote docker image signature
         ## matches this signature)
         generate_sig_and_publish_image "$local_image_name" "$remote_image_name" "$sig_abs_path"
-        echo "First run! Exiting"
+        commit_sig "$sig_abs_path"
         exit 0
     fi
 
@@ -158,4 +150,6 @@ for local_repo_rel_path in docker-builder/registry-repos/*; do
         echo "they are the same!"
         generate_sig_and_publish_image "$local_image_name" "$remote_image_name" "$sig_abs_path"
     fi
+
+    commit_sig "$sig_abs_path"
 done

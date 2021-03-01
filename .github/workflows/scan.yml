@@ -1,9 +1,9 @@
-name: Scan
+name: Scan Docker Images
 on: [pull_request]
 
 jobs:
   scan:
-    name: Scan
+    name: Scan Docker Images
     runs-on: ubuntu-latest
     steps:
       - name: Checkout current git repo
@@ -11,11 +11,6 @@ jobs:
       - name: Install Trivy
         run: |
           bash install.sh
-      - name: Log in to Dockerhub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Install Trivy
         run: |
           bash docker-scan.sh
