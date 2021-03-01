@@ -1,12 +1,10 @@
 name: Scan
 on: [push, pull_request]
 
-defaults:
-  run:
-    working-directory: ${{ github.workspace }}/repo
-
-
 jobs:
+  defaults:
+    run:
+      working-directory: ${{ github.workspace }}/repo
   scan:
     name: Scan
     runs-on: ubuntu-latest
