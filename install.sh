@@ -5,7 +5,7 @@
 # GENERAL
 # +--------------------+
 
-## Installs dependencies for the attack simulation environment
+## Installs dependencies for Trivy
 ## Tested on FRESH install of Kali Linux 2021.1.0 on 2/2021
 
 # NOTE: This script is NOT guaranteed to work into the future

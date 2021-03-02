@@ -7,6 +7,24 @@ set -x
 
 # Checks if an image has vulnerabilities (via Trivy) BEFORE uploading to Docker registry
 
+# Dockerfile -> Docker Image -> Docker Container
+
+# Dockerfile: Docker Configurations
+# Docker Image: A lean Virtual Machine Image (i.e., .iso)
+# Docker Container: A running application (similar to a running Virtual Machine)
+
+# Docker Images are stored within a Docker Repository
+# Docker Repositories are housed within a Docker Registry (e.g., Dockerhub)
+# In this tutorial, our Docker Registry will be Dockerhub
+# https://hub.docker.com/repository/docker/zachroofsec/ps-trivy
+
+# This workflow scans all Docker Images BEFORE they are uploaded (i.e., pushed)
+# to Dockerhub.  The upload step occurs in `builder.yml` workflow
+
+# Workflow expects the following convention:
+# /docker-builder/registry-repos/REPO_NAME/Dockerfile
+
+
 # +--------------------+
 # ASSUMPTIONS
 # +--------------------+
