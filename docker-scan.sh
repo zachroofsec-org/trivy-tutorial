@@ -58,10 +58,20 @@ for local_repo_rel_path in docker-builder/registry-repos/*; do
 
     ## Scan local image
     trivy image --reset
-    trivy image "${local_image_name}"
+    trivy image --severity CRITICAL,HIGH,MEDIUM --exit-code 2 --ignore-unfixed "${local_image_name}"
 
     ## If image is vulnerable, stop image upload
-    if [[ $? -ne 0 ]]; then
+    if [[ $? -eq 0 ]]; then
+        echo "Docker Images are in compliance with our security policy!"
+        echo "Woo hoo!"
+        exit 0
+    elif [[ $? -eq 2 ]]; then
+        echo "A docker images contains a vulnerability!"
+        echo "Please fix!"
+        exit 1
+    else
+        echo "There was an unexpected error!"
+        echo "Please reach out to the Security Team"
         exit 1
     fi
 done

@@ -10,6 +10,15 @@
 ## https://docs.github.com/en/actions/learn-github-actions/introduction-to-github-actions#overview
 
 # +--------------------+
+# ASSUMPTIONS
+# +--------------------+
+
+# Github Branch Protection Rules are set up to force:
+# 1. All changes must go through a Pull Request
+# 2. If Trivy scan FAILS, a Pull Request CAN NOT be accepted
+
+
+# +--------------------+
 # MAIN LOGIC
 # +--------------------+
 

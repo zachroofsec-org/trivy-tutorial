@@ -1,4 +1,4 @@
-FROM debian:stretch-slim
+FROM debian:stretch-20210208-slim
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -6,9 +6,6 @@ ENV DEBIAN_FRONTEND noninteractive
 # SYSTEM-LEVEL PACKAGE MANAGER INSTALLATION
 # (and misc dependencies)
 # +--------------------+
-
-RUN apt-get update -y &&\
-    apt-get dist-upgrade
 
 #RUN apt-get update -y &&\
 #    apt-get dist-upgrade &&\
