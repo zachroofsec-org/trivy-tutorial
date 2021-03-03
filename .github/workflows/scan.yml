@@ -1,16 +1,47 @@
-name: Scan Docker Images
+# +--------------------+
+# SUMMARY
+# +--------------------+
+
+## Before modifying the code within a Github Repository, a peer review must occur
+## This peer review occurs within a "Pull Request"
+## When a Pull Request occurs, this workflow will use Trivy to scan for vulnerabilities
+
+## Github Action Overview
+## https://docs.github.com/en/actions/learn-github-actions/introduction-to-github-actions#overview
+
+# +--------------------+
+# ASSUMPTIONS
+# +--------------------+
+
+# Github Branch Protection Rules are set up to force:
+# 1. All changes must go through a Pull Request
+# 2. If Trivy scan FAILS, a Pull Request CAN NOT be accepted
+
+
+# +--------------------+
+# MAIN LOGIC
+# +--------------------+
+
+name: Security - Docker - Scan
+
+## Run workflow when ANY new changes are proposed
+## Workflow runs within an isolated environment
 on: [pull_request]
 
 jobs:
   scan:
     name: Scan Docker Images
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
-      - name: Checkout current git repo
+      # Allow isolated environment access to ps-trivy Git repo
+      - name: Checkout Current Git Repo
         uses: actions/checkout@v2
+
       - name: Install Trivy
         run: |
+          # Run install script at ps-trivy/install.sh
           bash install.sh
-      - name: Install Trivy
+
+      - name: Execute Trivy Scans
         run: |
           bash docker-scan.sh

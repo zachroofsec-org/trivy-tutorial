@@ -7,6 +7,24 @@ set -x
 
 # Checks if an image has vulnerabilities (via Trivy) BEFORE uploading to Docker registry
 
+# Dockerfile -> Docker Image -> Docker Container
+
+# Dockerfile: Docker Configurations
+# Docker Image: A lean Virtual Machine Image (i.e., .iso)
+# Docker Container: A running application (similar to a running Virtual Machine)
+
+# Docker Images are stored within a Docker Repository
+# Docker Repositories are housed within a Docker Registry (e.g., Dockerhub)
+# In this tutorial, our Docker Registry will be Dockerhub
+# https://hub.docker.com/repository/docker/zachroofsec/ps-trivy
+
+# This workflow scans all Docker Images BEFORE they are uploaded (i.e., pushed)
+# to Dockerhub.  The upload step occurs in `builder.yml` workflow
+
+# Workflow expects the following convention:
+# /docker-builder/registry-repos/REPO_NAME/Dockerfile
+
+
 # +--------------------+
 # ASSUMPTIONS
 # +--------------------+
@@ -36,14 +54,25 @@ for local_repo_rel_path in docker-builder/registry-repos/*; do
     docker image rm "$local_image_name" || true
 
     ## Local image build
-    docker build --no-cache --tag "${local_image_name}" ${local_docker_dir_abs_path}
+    docker build --no-cache --tag "${local_image_name}" "${local_docker_dir_abs_path}"
 
     ## Scan local image
     trivy image --reset
-    trivy image "${local_image_name}"
+    trivy image --no-progress --severity CRITICAL,HIGH,MEDIUM --exit-code 2 --ignore-unfixed "${local_image_name}"
+    vuln_result_code="$?"
 
     ## If image is vulnerable, stop image upload
-    if [[ $? -ne 0 ]]; then
+    if [[ "$vuln_result_code" -eq 0 ]]; then
+        echo "Docker Images are in compliance with our security policy!"
+        echo "Woo hoo!"
+        exit 0
+    elif [[ "$vuln_result_code" -eq 2 ]]; then
+        echo "A docker images contains a vulnerability!"
+        echo "Please fix!"
+        exit 1
+    else
+        echo "There was an unexpected error!"
+        echo "Please reach out to the Security Team"
         exit 1
     fi
 done

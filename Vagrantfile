@@ -8,7 +8,7 @@ Vagrant.configure("2") do |config|
     config.vm.define "demo", primary: true do |demo|
         config.vm.box = "zachroofsec/trivy"
         config.vm.box_version = "1.0.0"
-        config.vm.synced_folder ".", "/home/vagrant/tutorial-trivy"
+        config.vm.synced_folder ".", "/home/vagrant/trivy-tutorial"
     end
 
     # For demo environment (while creating tutorial)
@@ -21,6 +21,6 @@ Vagrant.configure("2") do |config|
     config.vm.define "test", autostart: false do |test|
         config.vm.box = "kalilinux/rolling"
         config.vm.box_version = "2021.1.0"
-        config.vm.synced_folder ".", "/home/vagrant/tutorial-trivy"
+        config.vm.synced_folder ".", "/home/vagrant/trivy-tutorial"
     end
 end

@@ -1,16 +1,17 @@
-name: Docker Builder
+name: Docker - Registry Orchestrator
 on:
   push:
     branches:
       - main
 
 jobs:
-  builder:
-    name: Docker Builder
-    runs-on: ubuntu-latest
+  docker-registry-orchestrator:
+    name: Docker Registry Orchestrator
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout current git repo
         uses: actions/checkout@v2
+        token: ${{ secrets.GIT_AUTOMATION_USER_TOKEN }}
       - name: Install Trivy
         run: |
           bash install.sh
@@ -21,4 +22,4 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Install Trivy
         run: |
-          bash docker-builder.sh zachroofsec
+          bash docker-registry-orchestrator.sh ${{ secrets.DOCKERHUB_USERNAME }}
