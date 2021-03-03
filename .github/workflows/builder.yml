@@ -26,3 +26,4 @@ jobs:
       - name: Install Trivy
         run: |
           bash docker-registry-orchestrator.sh latest ${{ secrets.DOCKERHUB_USERNAME }}
+          echo updates
