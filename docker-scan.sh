@@ -76,3 +76,5 @@ for local_repo_rel_path in docker-builder/registry-repos/*; do
         exit 1
     fi
 done
+
+echo foo
