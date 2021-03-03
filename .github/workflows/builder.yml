@@ -25,4 +25,4 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Install Trivy
         run: |
-          bash docker-registry-orchestrator.sh ${{ secrets.DOCKERHUB_USERNAME }}
+          bash docker-registry-orchestrator.sh latest ${{ secrets.DOCKERHUB_USERNAME }}
