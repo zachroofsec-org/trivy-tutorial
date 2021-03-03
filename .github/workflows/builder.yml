@@ -11,7 +11,8 @@ jobs:
     steps:
       - name: Checkout current git repo
         uses: actions/checkout@v2
-        token: ${{ secrets.GIT_AUTOMATION_USER_TOKEN }}
+        with:
+          token: ${{ secrets.GIT_AUTOMATION_USER_TOKEN }}
       - name: Install Trivy
         run: |
           bash install.sh
