@@ -28,8 +28,8 @@ set -x
 TAG="$1"
 USER="$2"
 
-TAG=latest
-USER="zachroofsec"
+#TAG=latest
+#USER="zachroofsec-automations"
 
 # +--------------------+
 # FUNCTIONS
@@ -78,7 +78,7 @@ for local_repo_rel_path in docker-builder/registry-repos/*; do
     docker image rm "$remote_image_name" || true
 
     ## Local image build
-    docker build --no-cache --tag "${local_image_name}" ${local_docker_dir_abs_path}
+    docker build --no-cache --tag "${local_image_name}" "${local_docker_dir_abs_path}"
 
     # +--------------------+
     # TAMPERING CHECKS SUMMARY
