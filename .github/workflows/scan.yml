@@ -33,7 +33,7 @@ jobs:
     name: Scan Docker Images
     runs-on: ubuntu-20.04
     steps:
-      # Allow isolated environment access to ps-trivy Git repo
+      # Allow isolated environment access to trivy-tutorial Git repo
       - name: Checkout Current Git Repo
         uses: actions/checkout@v2
 

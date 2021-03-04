@@ -2,7 +2,7 @@ name: Docker - Registry Orchestrator
 on:
   push:
     paths-ignore:
-      - docker-builder/registry-repos/ps-trivy/image_sha.txt
+      - docker-builder/registry-repos/trivy-tutorial/image_sha.txt
     branches:
       - main
 
