@@ -7,18 +7,19 @@ ENV DEBIAN_FRONTEND noninteractive
 # (and misc dependencies)
 # +--------------------+
 
-#RUN apt-get update -y &&\
-#    apt-get dist-upgrade &&\
-#    apt-get install -y wget \
-#        build-essential \
-#        apache2 &&\
-#    a2enmod cgid && \
-#    apt-get autoremove &&\
-#    apt-get clean &&\
-#    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-#
-#COPY apache/default.cgi /usr/lib/cgi-bin/
-#RUN chmod +x /usr/lib/cgi-bin/default.cgi
+RUN apt-get update -y &&\
+    apt-get dist-upgrade &&\
+    apt-get install -y wget \
+        build-essential \
+    apt-get autoremove &&\
+    apt-get clean &&\
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN wget http://snapshot.debian.org/archive/debian/20130319T033933Z/pool/main/o/openssl/libssl1.0.0_1.0.1e-2_amd64.deb -O /tmp/libssl1.0.0_1.0.1e-2_amd64.deb && \
+    dpkg -i /tmp/libssl1.0.0_1.0.1e-2_amd64.deb
+
+RUN wget http://snapshot.debian.org/archive/debian/20130319T033933Z/pool/main/o/openssl/openssl_1.0.1e-2_amd64.deb -O /tmp/openssl_1.0.1e-2_amd64.deb &&\
+    dpkg -i /tmp/openssl_1.0.1e-2_amd64.deb
 
 # +--------------------+
 # MAKE INSTALLATION (shellshock)
