@@ -37,8 +37,4 @@ RUN wget http://snapshot.debian.org/archive/debian/20130319T033933Z/pool/main/o/
 # APPLICATION-LEVEL PACKAGE MANAGER INSTALLATION (regex DoS)
 # +--------------------+
 
-COPY lang_dependencies/Pipfile.lock /app/Pipfile.lock
-
-EXPOSE 80
-
-#CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+#COPY lang_dependencies/Pipfile.lock /app/Pipfile.lock
