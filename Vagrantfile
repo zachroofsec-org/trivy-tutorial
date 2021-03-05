@@ -30,6 +30,6 @@ Vagrant.configure("2") do |config|
 
         # Virtualbox synced_folder is a 2 way sync.  However, there can be issues with file permissions
         # If there are issues, use `type:"rsync"` (see above)
-        config.vm.synced_folder ".", "/home/vagrant/trivy-tutorial", type:"virtualbox"
+#         config.vm.synced_folder ".", "/home/vagrant/trivy-tutorial", type:"virtualbox"
     end
 end
