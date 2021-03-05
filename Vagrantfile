@@ -3,6 +3,7 @@ Vagrant.configure("2") do |config|
         vb.gui = false
         vb.memory = "5192"
     end
+
     # If we don't use rsync, vagrant will mount the shared folder as root
     # (this can cause file permission errors)
     # To automate the 1 way sync: `vagrant auto-sync VM_NAME`
