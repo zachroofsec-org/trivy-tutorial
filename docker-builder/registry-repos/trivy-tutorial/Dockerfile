@@ -16,7 +16,6 @@ RUN apt-get update -y &&\
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 
-
 # +--------------------+
 # MAKE INSTALLATION (shellshock)
 # (system-level installation WITHOUT package manager)
