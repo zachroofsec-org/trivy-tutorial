@@ -1,11 +1,30 @@
-name: Docker - Registry Orchestrator
+# +--------------------+
+# WORKFLOW SUMMARY
+# +--------------------+
+
+## 1. Builds Docker Images and uploads them to remote Docker Registry
+## 2. Does signature validation to ensure Docker Images (in the Registry) have not
+## been tampered with.
+
+
+name: Security - Docker - Registry Orchestrator
 on:
   schedule:
+    ## When the Docker Images are rebuilt, package updates occur
+    ## By executing this workflow on a recurring schedule, we minimize
+    ## vulnerabilities that can be discovered by Trivy
     - cron: '*/5 * * * *'
   push:
     paths-ignore:
+      ## When a Docker Image is built, its signature is committed into the main branch
+      ## of the Git repo.
+      ## (This signature is used for integrity checking within docker-registry-orchestrator.sh)
+      ## We ignore this path so we don't cause an infinite loop
       - docker-builder/registry-repos/trivy-tutorial/image_sha.txt
     branches:
+      ## When a Pull Request is accepted, its code is merged into the main branch
+      ## At that point, this workflow will be triggered and Docker Images will be uploaded 
+      ## to the Registry
       - main
 
 jobs:
@@ -13,19 +32,31 @@ jobs:
     name: Docker Registry Orchestrator
     runs-on: ubuntu-20.04
     steps:
+      ## Allow access to trivy-tutorial Git repo
       - name: Checkout current git repo
         uses: actions/checkout@v2
         with:
+          ## We use a separate Github User (i.e., an "automation user") specifically
+          ## for our Github Actions.
+          ## This user is given "admin" permissions so they can bypass the Pull Request
+          ## Process and commit the Docker Image Signature into the main branch
+          ## More setup instructions: https://github.com/zachroofsec-org/trivy-tutorial#github-action-setup-instructions
           token: ${{ secrets.GIT_AUTOMATION_USER_TOKEN }}
+          
       - name: Install Trivy
         run: |
+          ## Run install script at trivy-tutorial/install.sh
           bash install.sh
+          
+      ## Log in to the Dockerhub Image Registry
+      ## (allows us to eventually upload our Docker Images)
       - name: Log in to Dockerhub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-      - name: Install Trivy
+          ## More setup instructions: https://github.com/zachroofsec-org/trivy-tutorial#github-action-setup-instructions
+          
+      - name: Docker Registry Interactions
         run: |
           bash docker-registry-orchestrator.sh latest ${{ secrets.DOCKERHUB_USERNAME }}
-          echo updates
