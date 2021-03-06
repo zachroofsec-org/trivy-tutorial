@@ -45,4 +45,4 @@ jobs:
 
       - name: Execute Trivy Scans
         run: |
-          bash docker-scan.sh
+          bash docker-scan.sh 
