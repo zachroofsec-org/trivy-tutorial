@@ -1,74 +1,63 @@
 #!/bin/bash
-set -x
 
 # +--------------------+
 # SUMMARY
 # +--------------------+
 
-# Checks if an image has vulnerabilities (via Trivy) BEFORE uploading to Docker registry
-
-# Dockerfile -> Docker Image -> Docker Container
-
-# Dockerfile: Docker Configurations
-# Docker Image: A lean Virtual Machine Image (i.e., .iso)
-# Docker Container: A running application (similar to a running Virtual Machine)
-
-# Docker Images are stored within a Docker Repository
-# Docker Repositories are housed within a Docker Registry (e.g., Dockerhub)
-# In this tutorial, our Docker Registry will be Dockerhub
-# https://hub.docker.com/repository/docker/zachroofsec/ps-trivy
-
-# This workflow scans all Docker Images BEFORE they are uploaded (i.e., pushed)
-# to Dockerhub.  The upload step occurs in `builder.yml` workflow
-
-# Workflow expects the following convention:
-# /docker-builder/registry-repos/REPO_NAME/Dockerfile
-
+## Checks if an Docker Image has vulnerabilities (via Trivy)
 
 # +--------------------+
 # ASSUMPTIONS
 # +--------------------+
 
-# 1. run script within docker-builder directory
-# 3. Script should be triggered on Pull Requests
-#    (allows package updates to occur)
-# 4. Docker images pull in package updates on every build
-# 5. Docker image changes (in git) must be approved by a trusted entity
-#    (Trivy can't find ALL docker vulnerabilities)
+## 1. Script expects the following convention:
+##     trivy-tutorial/docker-builder/registry-repos/REPO_NAME/Dockerfile
+##     (e.g., trivy-tutorial/docker-builder/registry-repos/trivy-tutorial/Dockerfile)
+
+##     Convention is shared with the docker-registry-orchestrator.sh
+##     (uploads Docker Images to the Docker Image Registry)
+
+## 2. Script should be triggered on Pull Requests
+
+## 3. Docker Image changes (in git) must be approved by a trusted entity
+##    (Trivy can't find ALL docker vulnerabilities)
 
 # +--------------------+
 # MAIN LOGIC
 # +--------------------+
 
-for local_repo_rel_path in docker-builder/registry-repos/*; do
-    [ -e "$local_repo_rel_path" ] || continue
+## Iterate through Docker configurations (Assumption 1)
+for docker_build_context_relative_path in docker-builder/registry-repos/*; do
+    ## Only iterate through directories
+    [[ ! -d "$docker_build_context_relative_path" ]] && continue
 
-    ## Get registry repo information from file structure
-    local_docker_dir_abs_path=$(realpath "$local_repo_rel_path")
+    ## Get the absolute path for the Docker configurations (i.e., build context)
+    docker_build_context_absolute_path=$(realpath "$docker_build_context_relative_path")
 
-    ## Generate image names
     local_image_name=test-image
 
-    ## Delete local images to ensure we dont leverage cached images
-    ## (helps with local development)
-    docker image rm "$local_image_name" || true
+    ## Local Docker image build
+    docker build --no-cache --tag "${local_image_name}" "${docker_build_context_absolute_path}"
 
-    ## Local image build
-    docker build --no-cache --tag "${local_image_name}" "${local_docker_dir_abs_path}"
-
-    ## Scan local image
+    ## Ensure that Trivy does NOT scan a cached image
     trivy image --reset
+    
+    ## Trivy scan
+    ## (Into the future, we will make our blocking behavior more granular)
+    ## If a vulnerability is found, Trivy will emit an exit code of 2
     trivy image --no-progress --severity CRITICAL,HIGH,MEDIUM --exit-code 2 --ignore-unfixed "${local_image_name}"
     vuln_result_code="$?"
 
-    ## If image is vulnerable, stop image upload
     if [[ "$vuln_result_code" -eq 0 ]]; then
-        echo "Docker Images are in compliance with our security policy!"
+        echo "Docker image is in compliance with the security policy!"
         echo "Woo hoo!"
-        exit 0
+        echo "Starting scan of next Docker Image (if defined)"
+        
+        continue
     elif [[ "$vuln_result_code" -eq 2 ]]; then
-        echo "A docker images contains a vulnerability!"
+        echo "This Docker image contains a vulnerability!"
         echo "Please fix!"
+        echo "PATH: $docker_build_context_absolute_path"
         exit 1
     else
         echo "There was an unexpected error!"
@@ -76,5 +65,3 @@ for local_repo_rel_path in docker-builder/registry-repos/*; do
         exit 1
     fi
 done
-
-echo foo
