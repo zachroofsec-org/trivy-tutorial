@@ -28,8 +28,8 @@
 
 ## Iterate through Docker configurations (Assumption 1)
 for docker_build_context_relative_path in docker-builder/registry-repos/*; do
-    # Only iterate through directories
-    [[ ! -d "$docker_build_context_relative_path" ]] || continue
+    ## Only iterate through directories
+    [[ ! -d "$docker_build_context_relative_path" ]] && continue
 
     ## Get the absolute path for the Docker configurations (i.e., build context)
     docker_build_context_absolute_path=$(realpath "$docker_build_context_relative_path")
