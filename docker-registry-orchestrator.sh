@@ -156,7 +156,7 @@ for docker_build_context_relative_path in docker-builder/registry-repos/*; do
         # Ensure that Trivy does NOT scan a cached image
         trivy image --reset
     
-        ## For simplicity, we will use the same Trivy scan
+        # For simplicity, we will use the same Trivy scan
         trivy image --no-progress --severity CRITICAL,HIGH,MEDIUM --ignore-unfixed "${remote_image_name}"
         
 

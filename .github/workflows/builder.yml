@@ -9,11 +9,11 @@
 
 name: Security - Docker - Registry Orchestrator
 on:
-  schedule:
+#  schedule:
     ## When the Docker Images are rebuilt, package updates occur
     ## By executing this workflow on a recurring schedule, we minimize
     ## vulnerabilities that can be discovered by Trivy
-    - cron: '*/5 * * * *'
+#    - cron: '*/5 * * * *'
   push:
     paths-ignore:
       ## When a Docker Image is built, its signature is committed into the main branch
