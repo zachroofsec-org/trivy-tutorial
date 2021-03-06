@@ -30,8 +30,9 @@ Vagrant.configure("2") do |config|
         test.ssh.forward_agent = true
         test.vm.provision "shell", path: "install-helpers/prompt-orchestrator.sh", privileged: true
 
-#         Virtualbox synced_folder is a 2 way sync.  However, there can be issues with file permissions
+#         synced_folder (type: virtualbox) is a 2 way sync.  
+#         However, there can be issues with file permissions
 #         If there are issues, use `type:"rsync"` (see above)
-#         config.vm.synced_folder ".", "/home/vagrant/trivy-tutorial", type:"virtualbox"
+#         test.vm.synced_folder ".", "/home/vagrant/trivy-tutorial", type:"virtualbox"
     end
 end
