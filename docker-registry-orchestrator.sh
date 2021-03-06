@@ -1,13 +1,11 @@
 #!/bin/bash
-set -x
 
 # +--------------------+
 # SUMMARY
 # +--------------------+
 
-# Builds docker images and pushes them to remote Docker registry
-# Checks if an image has vulnerabilities (via Trivy) BEFORE uploading to Docker registry
-# Checks if an image (in the remote registry) has been modified OUTSIDE of this script
+# Builds Docker Images and uploads them to remote Docker Registry
+# Checks if an Docker Image (in the remote registry) has been modified OUTSIDE of this script
 
 # +--------------------+
 # ASSUMPTIONS
@@ -27,9 +25,6 @@ set -x
 
 TAG="$1"
 USER="$2"
-
-#TAG=latest
-#USER="zachroofsec-automations"
 
 # +--------------------+
 # FUNCTIONS

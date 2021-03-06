@@ -1,5 +1,7 @@
 name: Docker - Registry Orchestrator
 on:
+  schedule:
+    - cron: '*/5 * * * *'
   push:
     paths-ignore:
       - docker-builder/registry-repos/trivy-tutorial/image_sha.txt
