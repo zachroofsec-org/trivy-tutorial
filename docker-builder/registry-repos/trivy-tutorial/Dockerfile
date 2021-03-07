@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # +--------------------+
 # SYSTEM-LEVEL PACKAGE MANAGER INSTALLATIONS
-# (and misc dependencies)
+# (and misc dependencies) 
 # +--------------------+
 
 RUN apt-get update -y &&\
