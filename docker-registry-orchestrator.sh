@@ -176,6 +176,8 @@ for docker_build_context_relative_path in docker-builder/registry-repos/*; do
             daemon://$remote_image_name
 
         echo "Stopping the upload process so an forensic investigation can take place"
+        # TODO: Add in alerting logic
+        
         exit 1
     else
         echo "No Docker Image tampering is present!"
