@@ -9,9 +9,9 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update -y &&\
     apt-get dist-upgrade &&\
-#    apt-get install -y apache2 \
-#        wget \
-#        build-essential &&\
+    apt-get install -y apache2 \
+        wget \
+        build-essential &&\
     apt-get autoremove &&\
     apt-get clean &&\
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -21,6 +21,7 @@ RUN apt-get update -y &&\
 
 #RUN wget http://snapshot.debian.org/archive/debian/20130319T033933Z/pool/main/o/openssl/openssl_1.0.1e-2_amd64.deb -O /tmp/openssl_1.0.1e-2_amd64.deb &&\
 #    dpkg -i /tmp/openssl_1.0.1e-2_amd64.deb
+
 
 # +--------------------+
 # MAKE INSTALLATION (shellshock)
