@@ -52,7 +52,6 @@ generate_signature_and_upload_image() {
 commit_and_push_signature() {
     local signature_absolute_path="$1"
 
-    git pull origin main
     git add "$signature_absolute_path"
     git commit -m "Updating Docker Image Signatures"
     git push origin main
@@ -63,9 +62,10 @@ commit_and_push_signature() {
 # MAIN LOGIC
 # +--------------------+
 
-# Setup Git configurations
+# GIT Set up
 git config user.name "Security Bot"
 git config user.email "<>"
+git pull origin main
 
 
 # Iterate through Docker configurations (See Assumption 4 for path convention)
