@@ -62,7 +62,7 @@ commit_and_push_signature() {
 # MAIN LOGIC
 # +--------------------+
 
-# GIT Set up
+# Git Configurations
 git config user.name "Security Bot"
 git config user.email "<>"
 git pull origin main

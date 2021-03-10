@@ -4,15 +4,16 @@ Vagrant.configure("2") do |config|
         vb.memory = "5192"
     end
 
-    # If we don't use rsync, vagrant will mount the shared folder as root
-    # (this can cause file permission errors)
-    # To automate the 1 way sync: `vagrant auto-sync VM_NAME`
-    config.vm.synced_folder ".", "/home/vagrant/trivy-tutorial", type:"rsync", owner: "vagrant", group: "vagrant"
-
     # For "final" demo environment that learner will use
     config.vm.define "demo", primary: true do |demo|
-        demo.vm.box = "zachroofsec/trivy"
+        demo.vm.box = "zachroofsec/trivy-tutorial"
         demo.vm.box_version = "1.0.0"
+        demo.ssh.forward_agent = true
+        
+        # If we don't use rsync, vagrant will mount the shared folder as root
+        # (this can cause file permission errors)
+        # To automate the 1 way sync: `vagrant auto-sync VM_NAME`
+        demo.vm.synced_folder ".", "/home/vagrant/trivy-tutorial", type:"rsync", owner: "vagrant", group: "vagrant"
     end
 
     # For demo environment (while creating tutorial)
@@ -20,7 +21,7 @@ Vagrant.configure("2") do |config|
         demo_inprog.vm.box = "kalilinux/rolling"
         demo_inprog.vm.box_version = "2021.1.0"
         demo_inprog.ssh.forward_agent = true
-        demo_inprog.vm.provision "shell", path: "install-helpers/prompt-orchestrator.sh"
+        demo_inprog.vm.provision "shell", path: "install-helpers/prompt-orchestrator.sh", privileged: true
     end
 
     # For test environment
@@ -29,10 +30,13 @@ Vagrant.configure("2") do |config|
         test.vm.box_version = "2021.1.0"
         test.ssh.forward_agent = true
         test.vm.provision "shell", path: "install-helpers/prompt-orchestrator.sh", privileged: true
-
-#         synced_folder (type: virtualbox) is a 2 way sync.  
-#         However, there can be issues with file permissions
-#         If there are issues, use `type:"rsync"` (see above)
-#         test.vm.synced_folder ".", "/home/vagrant/trivy-tutorial", type:"virtualbox"
+        
+        # If we don't use rsync, vagrant will mount the shared folder as root
+        # (this can cause file permission errors)
+        # To automate the 1 way sync: `vagrant auto-sync VM_NAME`
+        test.vm.synced_folder ".", "/home/vagrant/trivy-tutorial", type:"rsync", owner: "vagrant", group: "vagrant"
+        
+        # If 2 way sync is needed
+#         demo.vm.synced_folder ".", "/home/vagrant/trivy-tutorial", type:"virtualbox"
     end
 end
