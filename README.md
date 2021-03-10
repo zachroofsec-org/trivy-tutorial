@@ -31,7 +31,7 @@
 
 1. [Fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) this repository into a [Github Organization](https://docs.github.com/en/github/setting-up-and-managing-organizations-and-teams/creating-a-new-organization-from-scratch)
 2. `git clone INSERT_FORK_LINK_HERE`
-    + **NOTE**: From now on, you will leverage this forked repo for experimentation. You can NOT use the `zachroofsec-org/trivy-tutorial` repo
+    + NOTE: From now on, you will leverage this forked repo for experimentation. You can NOT use the `zachroofsec-org/trivy-tutorial` repo
 3. Create an "automation" Github user
     + This user will be leveraged within a Github Action
     + A potential name: `YOUR_REGULAR_USERNAME-automation`
