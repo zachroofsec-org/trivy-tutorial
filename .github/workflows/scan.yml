@@ -2,6 +2,8 @@
 # WORKFLOW SUMMARY
 # +--------------------+
 
+# This is a Github Actions workflow file
+
 ## Before modifying the code within a Github Repository, a peer review must occur
 ## This peer review occurs within a "Pull Request"
 ## When a Pull Request occurs, this workflow will use Trivy to scan for vulnerabilities
