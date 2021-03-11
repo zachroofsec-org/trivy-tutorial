@@ -22,6 +22,7 @@ Vagrant.configure("2") do |config|
         demo_inprog.vm.box_version = "2021.1.0"
         demo_inprog.ssh.forward_agent = true
         demo_inprog.vm.provision "shell", path: "install-helpers/prompt-orchestrator.sh", privileged: true
+        demo_inprog.vm.synced_folder ".", "/home/vagrant/trivy-tutorial", type:"rsync", owner: "vagrant", group: "vagrant"
     end
 
     # For test environment

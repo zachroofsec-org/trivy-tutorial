@@ -4,7 +4,7 @@
 # GENERAL
 # +--------------------+
 
-## Installs dependencies for Trivy
+## Installs dependencies for Trivy course
 
 ## Tested on (3/2021):
 ## Kali Linux 2021.1.0
@@ -16,6 +16,7 @@
 # +--------------------+
 # MAIN INSTALLATION LOGIC
 # +--------------------+
+
 export DEBIAN_FRONTEND=noninteractive
 
 ## Deduce the current distro name
