@@ -14,7 +14,7 @@
 
 # 1. Script should be triggered every 24 hours AND when Dockerfile modifications are made (at a minimum)
 
-# 2. Docker Images pull in package updates on every build
+# 2. Dockerfiles pull in package updates on every build
 
 # 3. Docker Image changes (in git) must be approved by a trusted entity
 #   (Trivy can't find ALL docker vulnerabilities)
@@ -189,9 +189,7 @@ for docker_build_context_relative_path in docker-builder/registry-repos/*; do
         
         # TODO: Send alert to SIEM
         
-        # Continue to next set of Docker configurations
-        # (within the for loop)
-        continue
+        exit 1
     else
         # The signatures DO match!
         
