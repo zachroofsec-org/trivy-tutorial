@@ -4,23 +4,22 @@
 # SUMMARY
 # +--------------------+
 
-# Builds Docker Images and uploads them to remote Docker Registry
-# Checks if an Docker Image (in the remote registry) has been modified OUTSIDE of this script
+# 1) Builds (and uploads) Docker Images a remote Docker Registry
+# 2) Checks if an Docker Image (in the remote registry) has been modified OUTSIDE of this script
 
 
 # +--------------------+
 # ASSUMPTIONS
 # +--------------------+
 
-# 1. Script should be triggered every 24 hours AND when Dockerfile modifications are made
-#    (allows package updates to occur)
+# 1. Script should be triggered every 24 hours AND when Dockerfile modifications are made (at a minimum)
 
-# 2. Docker Images pull in package updates on every build
+# 2. Dockerfiles pull in package updates on every build
 
 # 3. Docker Image changes (in git) must be approved by a trusted entity
 #   (Trivy can't find ALL docker vulnerabilities)
 
-# 4. Script expects the following convention:
+# 4. Script expects the following convention (shared with docker-scan.sh):
 #     trivy-tutorial/docker-builder/registry-repos/REPO_NAME/Dockerfile
 #     (e.g., trivy-tutorial/docker-builder/registry-repos/trivy-tutorial/Dockerfile)
 
@@ -44,7 +43,10 @@ generate_signature_and_upload_image() {
     local remote_image_name="$2"
     local sig_abs_path="$3"
 
+    # Generate Docker Image signature 
+    # (used to detect Docker Image tampering)
     container-diff analyze --no-cache --format='{{(index .Analysis 0).Digest}}' daemon://"$local_image_name" > "$sig_abs_path"
+    
     docker tag "$local_image_name" "$remote_image_name"
     docker push "$remote_image_name"
 }
@@ -53,7 +55,7 @@ commit_and_push_signature() {
     local signature_absolute_path="$1"
 
     git add "$signature_absolute_path"
-    git commit -m "Updating Docker Image Signatures"
+    git commit -m "Updating Docker Image signature"
     git push origin main
 }
 
@@ -76,7 +78,7 @@ for docker_build_context_relative_path in docker-builder/registry-repos/*; do
     # Get the absolute path for the Docker configurations (i.e., build context)
     docker_build_context_absolute_path=$(realpath "$docker_build_context_relative_path")
     
-    # Get the Docker Registry repo name from path
+    # Get the Docker Registry repo name from our path convention
     repo_name=$(basename "$docker_build_context_absolute_path")
 
     # Generate image names
@@ -88,6 +90,7 @@ for docker_build_context_relative_path in docker-builder/registry-repos/*; do
 
     # Local image build
     docker build --no-cache --tag "${local_image_name}" "${docker_build_context_absolute_path}"
+    # We can now refer to this local image by its tag
 
     # +--------------------+
     # TAMPERING CHECKS SUMMARY
@@ -98,7 +101,7 @@ for docker_build_context_relative_path in docker-builder/registry-repos/*; do
     # (i.e., Trivy scan, Pull Request Approval)
 
     # We need to ensure that a malicious Docker Image has NOT been placed in
-    # the docker registry
+    # the Docker Registry
 
     # For additional tampering checks, you should also use Docker Content Trust
     # (outside the scope of this tutorial)
@@ -109,17 +112,19 @@ for docker_build_context_relative_path in docker-builder/registry-repos/*; do
 
     # Is this the first build of the Docker Image?
     # If so, we won't check for image tampering
+    # signature_absolute_path is only available AFTER the first build
     
     signature_absolute_path="$docker_build_context_absolute_path/image_sha.txt"
     first_run=false
     if [[ ! -f "$signature_absolute_path" ]]; then
+        # Signature exists
         first_run=true
     fi
 
     if [[ "$first_run" == "true" ]]; then
-        # generate Docker Image signature via Google's container-diff tool
-        # (on subsequent image builds, we'll validate that the remote Docker Image signature
-        # matches this signature)
+        # Use Google's container-diff tool to generate the
+        # Docker Image signature
+        # (on subsequent image builds, we'll validate that the remote Docker Image signature matches this signature)
         # Ex: sha256:9e81b4fc8735413c172a7595636957278b90c3613fb8983f4418208ba7ecab97
         generate_signature_and_upload_image "$local_image_name" "$remote_image_name" "$signature_absolute_path"
         
@@ -128,7 +133,10 @@ for docker_build_context_relative_path in docker-builder/registry-repos/*; do
         
         echo "First time building this Docker Image..."
         echo "Skipping integrity checks..."
-        exit 0
+        
+        # Continue to next set of Docker configurations
+        # (within the for loop)
+        continue
     fi
 
     # This is NOT the first time this Docker Image has been built
@@ -137,27 +145,27 @@ for docker_build_context_relative_path in docker-builder/registry-repos/*; do
     # Download remote version of Docker Image
     docker pull "${remote_image_name}"
 
-    # Get the signature of the Docker Image (remote version)
+    # Get the signature of the remote Docker Image
     remote_signature=$(container-diff analyze --no-cache --format='{{(index .Analysis 0).Digest}}' daemon://"$remote_image_name")
     # Get the signature of the Docker Image that was previously built
     previous_build_signature=$(cat "$signature_absolute_path")
 
     if [[ "${remote_signature}" != "${previous_build_signature}" ]]; then
+        # The signatures do NOT match!
         
         echo "The remote signature does NOT match the previous build's signature!"
-        echo "Docker Image Tampering might be present in Dockerhub!"
+        echo "Docker Image tampering might be present in Dockerhub!"
         
         echo "Remote signature: $remote_signature"
         echo "Previous build signature: $previous_build_signature"
         echo "Docker Registry Repo: $repo_name"
         
-        
-        echo "Running Trivy scans of the remote Docker Image"
+        echo "Running Trivy scans on the remote Docker Image"
         
         # Ensure that Trivy does NOT scan a cached image
         trivy image --reset
     
-        # For simplicity, we will use the same Trivy scan
+        # For simplicity, we will use our previous scan settings
         trivy image --no-progress --severity CRITICAL,HIGH,MEDIUM --ignore-unfixed "${remote_image_name}"
         
 
@@ -176,11 +184,15 @@ for docker_build_context_relative_path in docker-builder/registry-repos/*; do
             daemon://$local_image_name\
             daemon://$remote_image_name
 
-        echo "Stopping the upload process so an forensic investigation can take place"
-        # TODO: Add in alerting logic
+        echo "Not uploading Docker Image!"
+        echo "An investigation needs to occur"
+        
+        # TODO: Send alert to SIEM
         
         exit 1
     else
+        # The signatures DO match!
+        
         echo "No Docker Image tampering is present!"
         generate_signature_and_upload_image "$local_image_name" "$remote_image_name" "$signature_absolute_path"
         commit_and_push_signature "$signature_absolute_path"

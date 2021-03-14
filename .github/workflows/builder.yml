@@ -3,30 +3,42 @@
 # +--------------------+
 
 ## 1. Builds Docker Images and uploads them to remote Docker Registry
-## 2. Does signature validation to ensure Docker Images (in the Registry) have not
-## been tampered with.
+## 2. Does signature validation to ensure Docker Images (in the Registry) have not been tampered with.
 
+
+# +--------------------+
+# MAIN LOGIC
+# +--------------------+
 
 name: Security - Docker - Registry Orchestrator
 on:
 #  schedule:
-    ## When the Docker Images are rebuilt, package updates occur
+    ## When our Docker Images are rebuilt, package updates occur
     ## By executing this workflow on a recurring schedule, we minimize
     ## vulnerabilities that can be discovered by Trivy
     ## COMMENTED OUT TO SAVE RESOURCES
 #    - cron: '0 0 * * *'
   push:
-    paths-ignore:
-      ## When a Docker Image is built, its signature is committed into the main branch
-      ## of the Git repo.
-      ## (This signature is used for integrity checking within docker-registry-orchestrator.sh)
-      ## We ignore this path so we don't cause an infinite loop
-      - docker-builder/registry-repos/trivy-tutorial/image_sha.txt
     branches:
       ## When a Pull Request is accepted, its code is merged into the main branch
       ## At that point, this workflow will be triggered and Docker Images will be uploaded 
       ## to the Registry
       - main
+    paths-ignore:
+      ## When a Docker Image is built, the Image's unique signature 
+      ## is committed into the main branch of the Git repo.
+      ## (This allows us to check for malicious updates to Docker Images)
+      
+      ## This workflow file will invoke docker-registry-orchestrator.sh
+      
+      ## docker-registry-orchestrator.sh:
+      ## a) commits a Docker Image's signature into the main branch
+      ##                  (see path below)
+      ## b) uses the signature to check for Docker Registry tampering
+      
+      ## If we allowed this path to trigger this workflow, we would
+      ## have an infinite loop
+      - docker-builder/registry-repos/trivy-tutorial/image_sha.txt
 
 jobs:
   docker-registry-orchestrator:
@@ -38,10 +50,10 @@ jobs:
         uses: actions/checkout@v2
         with:
           ## We use a separate Github User (i.e., an "automation user") specifically
-          ## for our Github Actions.
-          ## This user is given "admin" permissions so they can bypass the Pull Request
-          ## Process and commit the Docker Image Signature into the main branch
-          ## More setup instructions: https://github.com/zachroofsec-org/trivy-tutorial#github-action-setup-instructions
+          ## for this workflow.
+          ## This user is given "admin" permissions so they can bypass
+          ## the branch protection rules and commit the Docker Image Signature DIRECTLY into the main branch
+          ## Setup instructions: https://github.com/zachroofsec-org/trivy-tutorial#github-action-setup-instructions-advanced
           token: ${{ secrets.GIT_AUTOMATION_USER_TOKEN }}
           
       - name: Install Trivy
@@ -56,8 +68,12 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          ## More setup instructions: https://github.com/zachroofsec-org/trivy-tutorial#github-action-setup-instructions
+          ## Setup instructions: https://github.com/zachroofsec-org/trivy-tutorial#github-action-setup-instructions-advanced
           
       - name: Docker Registry Interactions
         run: |
           bash docker-registry-orchestrator.sh latest ${{ secrets.DOCKERHUB_USERNAME }}
+          ## We'll explore the script's arguments in the next section
+          
+          ## Setup instructions: https://github.com/zachroofsec-org/trivy-tutorial#github-action-setup-instructions-advanced
+          
