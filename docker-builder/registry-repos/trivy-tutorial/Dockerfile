@@ -8,7 +8,7 @@ ENV DEBIAN_FRONTEND noninteractive
 # +--------------------+
 
 RUN apt-get update -y &&\
-    apt-get dist-upgrade &&\
+    apt-get dist-upgrade -y &&\
     apt-get install -y apache2 \
         wget \
         build-essential &&\
