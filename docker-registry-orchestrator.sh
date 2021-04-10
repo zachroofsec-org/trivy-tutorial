@@ -117,7 +117,7 @@ for docker_build_context_relative_path in docker-builder/registry-repos/*; do
     signature_absolute_path="$docker_build_context_absolute_path/image_sha.txt"
     first_run=false
     if [[ ! -f "$signature_absolute_path" ]]; then
-        # Signature exists
+        # Signature does NOT exist
         first_run=true
     fi
 
