@@ -68,8 +68,10 @@
 
 ## Blogs/Documentation
 
-+ [Trivy](https://github.com/aquasecurity/trivy)
-+ [Docker History Modification](https://www.justinsteven.com/posts/2021/02/14/docker-image-history-modification)
++ [Trivy README](https://github.com/aquasecurity/trivy)
++ [Trivy Visual Studio Code Extension](https://github.com/aquasecurity/trivy-vscode-extension)
++ [Harbor Scanner Adapter for Trivy](https://github.com/aquasecurity/harbor-scanner-trivy)
++ [Docker Image History Modification](https://www.justinsteven.com/posts/2021/02/14/docker-image-history-modification)
 + [Github Actions Overview](https://docs.github.com/en/actions/learn-github-actions/introduction-to-github-actions#overview)
 + [container-diff](https://github.com/GoogleContainerTools/container-diff)
 
