@@ -26,7 +26,7 @@ distro="$(lsb_release -sc)"
     # We set the distro to make trivy install correctly
 #    distro="buster"
 #fi
-#
+
 ## Install Trivy (and misc dependencies for Trivy)
 ## https://github.com/aquasecurity/trivy
 sudo apt-get -y update &&\
