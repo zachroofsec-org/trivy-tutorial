@@ -45,7 +45,7 @@ for docker_build_context_relative_path in docker-builder/registry-repos/*; do
     ## Trivy scan
     ## (Into the future, we will make our blocking behavior more granular)
     ## If a vulnerability is found, Trivy will emit an exit code of 2
-    trivy image --no-progress --severity CRITICAL,HIGH,MEDIUM --exit-code 2 --ignore-unfixed "${local_image_name}"
+    trivy image --no-progress --security-checks vuln --severity CRITICAL,HIGH,MEDIUM --exit-code 2 --ignore-unfixed "${local_image_name}"
     vuln_result_code="$?"
 
     if [[ "$vuln_result_code" -eq 0 ]]; then
